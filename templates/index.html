@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Detection System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: #212529;
+        }
+        .navbar-brand {
+            color: #fff !important;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .main-card {
+            margin-top: 40px;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            background: #fff;
+            padding: 2.5rem 2rem 2rem 2rem;
+        }
+        .upload-options {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin: 30px 0 10px 0;
+        }
+        .upload-option {
+            flex: 1;
+            min-width: 260px;
+            padding: 28px 18px;
+            border: 1.5px solid #e3e6ee;
+            border-radius: 12px;
+            background: #f6f8fa;
+            text-align: center;
+            transition: box-shadow 0.2s;
+        }
+        .upload-option:hover {
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        }
+        .upload-option h3 {
+            margin-top: 0;
+            color: #212529;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .upload-option i {
+            font-size: 2.2rem;
+            color: #4f8cff;
+            margin-bottom: 10px;
+        }
+        .btn {
+            margin-top: 10px;
+            background: linear-gradient(90deg, #4f8cff 0%, #38b6ff 100%);
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #38b6ff 0%, #4f8cff 100%);
+        }
+        .preview-container {
+            position: relative;
+            max-width: 100%;
+            margin: 30px 0 10px 0;
+            min-height: 220px;
+            border: 2px dashed #b6c2d6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: #fafdff;
+            border-radius: 10px;
+        }
+        #preview, #resultImage, #resultVideo {
+            max-width: 100%;
+            max-height: 420px;
+            display: block;
+            margin: 0 auto;
+        }
+        .hidden {
+            display: none;
+        }
+        #loadingSpinner {
+            display: none;
+            text-align: center;
+            margin: 24px 0;
+        }
+        #detectionLog {
+            margin-top: 18px;
+            max-height: 260px;
+            overflow-y: auto;
+            border: 1px solid #e3e6ee;
+            padding: 12px;
+            border-radius: 6px;
+            background: #fafdff;
+        }
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e3e6ee;
+        }
+        .log-item:last-child {
+            border-bottom: none;
+        }
+        .log-label {
+            font-weight: 600;
+        }
+        .log-confidence {
+            color: #38b6ff;
+        }
+        .footer {
+            margin-top: 60px;
+            padding: 18px 0 8px 0;
+            background: #212529;
+            color: #fff;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fa-solid fa-paw"></i> Animal Detection System
+            </a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="main-card mx-auto col-lg-8 col-md-10 col-12">
+            <h2 class="text-center mb-4" style="font-weight:700; color:#212529; letter-spacing:1px;">AI-Powered Animal Detection</h2>
+            <div class="upload-options">
+                <div class="upload-option">
+                    <i class="fa-solid fa-image"></i>
+                    <h3>Image Detection</h3>
+                    <form id="imageUploadForm" enctype="multipart/form-data">
+                        <input type="file" id="imageInput" accept="image/*" required class="form-control">
+                        <button type="submit" class="btn w-100 mt-2">Detect in Image</button>
+                    </form>
+                </div>
+                <div class="upload-option">
+                    <i class="fa-solid fa-film"></i>
+                    <h3>Video Detection</h3>
+                    <form id="videoUploadForm" enctype="multipart/form-data">
+                        <input type="file" id="videoInput" accept="video/*" required class="form-control">
+                        <button type="submit" class="btn w-100 mt-2">Detect in Video</button>
+                    </form>
+                </div>
+            </div>
+            <div class="preview-container mt-4" id="previewSection">
+                <p class="text-muted">Preview will appear here</p>
+            </div>
+            <div id="loadingSpinner" class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Processing your file, please wait...</p>
+            </div>
+            <div class="results mt-4" id="resultSection">
+                <h4 class="mb-3" style="font-weight:600;">Detection Results</h4>
+                <div id="detectionLog"></div>
+                <div class="mt-3">
+                    <img id="resultImage" class="img-fluid hidden" />
+                    <video id="resultVideo" class="img-fluid hidden" controls></video>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer mt-5">
+        &copy; 2025 Animal Detection System &mdash; Powered by AI &amp; Computer Vision
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
