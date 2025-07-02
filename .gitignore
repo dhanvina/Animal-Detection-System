@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+#models
+yolov8n.pt
+yolov8x.pt
 # C extensions
 *.so
 

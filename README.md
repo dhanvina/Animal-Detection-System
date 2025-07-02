@@ -81,12 +81,17 @@ animal-detection/
 4. View results with animal names, emojis, and confidence scores.
 5. Download or review processed media.
 
-## 🔍 Model Details
 
-This app uses YOLOv8x, a leading object detection model, for:
-- Real-time, multi-animal detection
-- High accuracy and speed
-- Support for a wide range of animal classes
+## � Download YOLOv8 Model Weights
+
+Due to GitHub file size limits, you must manually download the YOLOv8 model weights:
+
+1. Download `yolov8x.pt` and `yolov8n.pt` from [this Google Drive folder](https://drive.google.com/drive/folders/1v7xc6x64NN21tWooYYVaIH1eHxfEFkNe?usp=sharing).
+2. Place the files in the project root directory (where `app.py` is located).
+
+If you need a smaller model, you can also download it from the [Ultralytics YOLOv8 releases](https://github.com/ultralytics/ultralytics/releases).
+
+**Note:** These files are required for detection to work. They are not included in the repository due to GitHub's 100MB file size limit.
 
 ## 🛡️ Security & Best Practices
 
